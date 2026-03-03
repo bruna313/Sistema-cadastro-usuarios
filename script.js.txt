@@ -1,0 +1,40 @@
+const form = document.getElementById("formCadastro");
+const lista = document.getElementById("listaUsuarios");
+
+let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+function renderizarUsuarios() {
+    lista.innerHTML = "";
+    usuarios.forEach((usuario, index) => {
+        const li = document.createElement("li");
+        li.textContent = usuario.nome + " - " + usuario.email;
+
+        const btnExcluir = document.createElement("button");
+        btnExcluir.textContent = "Excluir";
+        btnExcluir.style.marginTop = "5px";
+        btnExcluir.onclick = () => {
+            usuarios.splice(index, 1);
+            localStorage.setItem("usuarios", JSON.stringify(usuarios));
+            renderizarUsuarios();
+        };
+
+        li.appendChild(document.createElement("br"));
+        li.appendChild(btnExcluir);
+        lista.appendChild(li);
+    });
+}
+
+form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const nome = document.getElementById("nome").value;
+    const email = document.getElementById("email").value;
+
+    usuarios.push({ nome, email });
+    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+    form.reset();
+    renderizarUsuarios();
+});
+
+renderizarUsuarios();
